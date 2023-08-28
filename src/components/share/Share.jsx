@@ -27,7 +27,7 @@ export default function Share() {
             const data = new FormData();
             data.append("file", file);
             try {
-                const res = await axios.post("/upload", data);
+                const res = await axios.post("http://192.168.0.200:8800/api/upload", data);
                 newPost.img = res.data.filename;
             } catch (err) {
                 console.log(err);
@@ -35,7 +35,7 @@ export default function Share() {
         }
 
         try {
-            await axios.post("/posts", newPost);
+            await axios.post("http://192.168.0.200:8800/api/posts", newPost);
             window.location.reload();
         } catch (err) {}
     };

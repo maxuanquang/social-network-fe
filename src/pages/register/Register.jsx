@@ -21,8 +21,8 @@ export default function Register() {
                 password: password.current.value,
             };
             try {
-                await axios.post("/auth/register", user);
-                history.push("/login")
+                await axios.post("http://192.168.0.200:8800/api/auth/register", user);
+                history.push("http://192.168.0.200:8800/api/login")
             } catch (err) {
                 console.log(err);
             }

@@ -17,7 +17,7 @@ export default function Rightbar({ user }) {
         const getFriends = async () => {
             try {
                 const friendList = await axios.get(
-                    "/users/friends/" + user._id
+                    "http://192.168.0.200:8800/api/users/friends/" + user._id
                 );
                 setFriends(friendList.data);
             } catch (err) {}
@@ -28,12 +28,12 @@ export default function Rightbar({ user }) {
     const handleClick = async () => {
         try {
             if (followed) {
-                await axios.put("/users/" + user._id + "/unfollow", {
+                await axios.put("http://192.168.0.200:8800/api/users/" + user._id + "/unfollow", {
                     userId: currentUser._id,
                 });
                 dispatch({ type: "UNFOLLOW", payload: user._id });
             } else {
-                await axios.put("/users/" + user._id + "/follow", {
+                await axios.put("http://1920.168.0.200:8800/api/users/" + user._id + "/follow", {
                     userId: currentUser._id,
                 });
                 dispatch({ type: "FOLLOW", payload: user._id });

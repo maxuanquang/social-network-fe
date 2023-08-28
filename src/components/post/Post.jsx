@@ -15,7 +15,7 @@ export default function Post({ post }) {
 
     const likeHandler = () => {
         try {
-            axios.put("/posts/" + post._id + "/like", {
+            axios.put("http://192.168.0.200:8800/api/posts/" + post._id + "/like", {
                 userId: currentUser._id,
             });
         } catch (err) {}
@@ -28,7 +28,7 @@ export default function Post({ post }) {
     useEffect(() => {
         async function fetchUser() {
             const response = await axios.get(
-                `http://localhost:8800/api/users?userId=${post.userId}`
+                `http://192.168.0.200:8800/api/users?userId=${post.userId}`
             );
             setUser(response.data);
         }

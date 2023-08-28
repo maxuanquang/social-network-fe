@@ -13,10 +13,10 @@ export default function Feed(props) {
         async function fetchPosts() {
             const response = props.username
                 ? await axios.get(
-                      `http://localhost:8800/api/posts/profile/${props.username}`
+                      `http://192.168.0.200:8800/api/posts/profile/${props.username}`
                   )
                 : await axios.get(
-                      `http://localhost:8800/api/posts/timeline/${user._id}`
+                      `http://192.168.0.200:8800/api/posts/timeline/${user._id}`
                   );
             setPosts(
                 response.data.sort((p1, p2) => {
