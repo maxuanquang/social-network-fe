@@ -33,7 +33,7 @@ export default function Rightbar({ user }) {
                 });
                 dispatch({ type: "UNFOLLOW", payload: user._id });
             } else {
-                await axios.put("http://1920.168.0.200:8800/api/users/" + user._id + "/follow", {
+                await axios.put("http://192.168.0.200:8800/api/users/" + user._id + "/follow", {
                     userId: currentUser._id,
                 });
                 dispatch({ type: "FOLLOW", payload: user._id });

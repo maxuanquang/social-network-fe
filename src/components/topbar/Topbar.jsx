@@ -7,6 +7,11 @@ import { AuthContext } from "../../context/AuthContext";
 export default function Topbar() {
     const PF = process.env.REACT_APP_PUBLIC_FOLDER;
 
+    const handleClick = () => {
+        localStorage.removeItem("user");
+        window.location.reload(false);
+    };
+
     const { user } = useContext(AuthContext);
 
     return (
@@ -55,6 +60,9 @@ export default function Topbar() {
                         alt=""
                     />
                 </Link>
+                <button className="topbarLogout" onClick={handleClick}>
+                    Logout
+                </button>
             </div>
         </div>
     );
