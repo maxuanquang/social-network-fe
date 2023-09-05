@@ -4,41 +4,52 @@ import "./rightbar.css";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { Add, Remove } from "@material-ui/icons";
+import { makeRequest } from "../../axios";
 
 export default function Rightbar({ user }) {
     const PF = process.env.REACT_APP_PUBLIC_FOLDER;
-    const [friends, setFriends] = useState([]);
+    const [userFollowers, setUserFollowers] = useState([]);
     const { user: currentUser, dispatch } = useContext(AuthContext);
-    const [followed, setFollowed] = useState(
-        currentUser.followings.includes(user?._id)
-    );
+    const [followed, setFollowed] = useState(false);
 
     useEffect(() => {
-        const getFriends = async () => {
+        const getFollowers = async () => {
             try {
-                const friendList = await axios.get(
-                    "/users/friends/" + user._id
+                const response = await makeRequest.get(
+                    `/friends/${user.user_id}/followers`
                 );
-                setFriends(friendList.data);
+                setFollowed(
+                    response.data.followers_ids.includes(currentUser.user_id)
+                );
+
+                const followers = [];
+                for (const id of response.data.followers_ids) {
+                    try {
+                        const userResponse = await makeRequest.get(
+                            `/users/${id}`
+                        );
+                        followers.push(userResponse.data);
+                    } catch (err) {
+                        console.log(err);
+                    }
+                }
+                setUserFollowers(followers);
             } catch (err) {}
         };
-        getFriends();
+        getFollowers();
     }, [user]);
 
     const handleClick = async () => {
         try {
             if (followed) {
-                await axios.put("/users/" + user._id + "/unfollow", {
-                    userId: currentUser._id,
-                });
-                dispatch({ type: "UNFOLLOW", payload: user._id });
+                await makeRequest.delete(`/friends/${user.user_id}`);
+                dispatch({ type: "UNFOLLOW", payload: user.user_id });
             } else {
-                await axios.put("/users/" + user._id + "/follow", {
-                    userId: currentUser._id,
-                });
-                dispatch({ type: "FOLLOW", payload: user._id });
+                await makeRequest.post(`/friends/${user.user_id}`);
+                dispatch({ type: "FOLLOW", payload: user.user_id });
             }
-            setFollowed(!followed);
+            // setFollowed(!followed);
+            window.location.reload(false);
         } catch (err) {
             console.log(err);
         }
@@ -55,12 +66,6 @@ export default function Rightbar({ user }) {
                     </span>
                 </div>
                 <img className="rightbarAd" src={PF + "ad.png"} alt="" />
-                {/* <h4 className="rightbarTitle">Online Friends</h4>
-                <ul className="rightbarFriendList">
-                    {Users.map((u) => (
-                        <Online key={u.id} user={u} />
-                    ))}
-                </ul> */}
             </>
         );
     };
@@ -68,7 +73,7 @@ export default function Rightbar({ user }) {
     const ProfileRightbar = () => {
         return (
             <>
-                {user.username !== currentUser.username && (
+                {user.user_name !== currentUser.user_name && (
                     <button
                         className="rightbarFollowButton"
                         onClick={handleClick}
@@ -94,25 +99,25 @@ export default function Rightbar({ user }) {
                         </span>
                     </div>
                 </div>
-                <h4 className="rightbarTitle">User friends</h4>
+                <h4 className="rightbarTitle">User followers</h4>
                 <div className="rightbarFollowings">
-                    {friends.map((friend) => (
+                    {userFollowers.slice(0, 9).map((follower) => (
                         <Link
-                            to={"/profile/" + friend.username}
+                            to={"/profile/" + follower.user_id}
                             style={{ textDecoration: "none" }}
                         >
                             <div className="rightbarFollowing">
                                 <img
                                     src={
-                                        friend.profilePicture
-                                            ? PF + friend.profilePicture
+                                        follower.profile_picture
+                                            ? PF + follower.profile_picture
                                             : PF + "person/noAvatar.jpeg"
                                     }
                                     alt=""
                                     className="rightbarFollowingImg"
                                 />
                                 <span className="rightbarFollowingName">
-                                    {friend.username}
+                                    {follower.user_name}
                                 </span>
                             </div>
                         </Link>

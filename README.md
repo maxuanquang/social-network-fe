@@ -3,6 +3,7 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
+Change `REACT_APP_PUBLIC_FOLDER` in `.env` and `baseURL` in `src/axios.js` to your backend server address before running.
 
 In the project directory, you can run:
 

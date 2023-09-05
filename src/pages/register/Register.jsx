@@ -4,14 +4,14 @@ import { useRef } from "react";
 import { useHistory } from "react-router-dom";
 
 export default function Register() {
-    const username = useRef()
-    const email = useRef()
-    const password = useRef()
-    const paswordAgain = useRef()
-    const history = useHistory()
+    const username = useRef();
+    const email = useRef();
+    const password = useRef();
+    const paswordAgain = useRef();
+    const history = useHistory();
 
     const handleClick = async (e) => {
-        e.preventDefault()
+        e.preventDefault();
         if (paswordAgain.current.value !== password.current.value) {
             paswordAgain.current.setCustomValidity("Passwords do not matched");
         } else {
@@ -21,8 +21,11 @@ export default function Register() {
                 password: password.current.value,
             };
             try {
-                await axios.post("/auth/register", user);
-                history.push("/login")
+                await axios.post(
+                    "http://192.168.0.200:8800/api/auth/register",
+                    user
+                );
+                history.push("/login");
             } catch (err) {
                 console.log(err);
             }
