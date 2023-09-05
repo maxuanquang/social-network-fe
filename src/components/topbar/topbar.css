@@ -104,3 +104,11 @@
     object-fit: cover;
     cursor: pointer;
 }
+
+.topbarLogout {
+    border: none;
+    padding: 10px;
+    border-radius: 20px;
+    font-weight: 500;
+    cursor: pointer;
+}
