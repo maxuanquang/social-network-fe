@@ -6,21 +6,22 @@ import Rightbar from "../../components/rightbar/Rightbar";
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { makeRequest } from "../../axios";
 
 export default function Profile() {
     const PF = process.env.REACT_APP_PUBLIC_FOLDER;
-    const username = useParams().username;
+    const user_id = useParams().user_id;
     const [user, setUser] = useState({});
 
     useEffect(() => {
         async function fetchUser() {
-            const response = await axios.get(
-                `http://192.168.0.200:8800/api/users?username=${username}`
+            const response = await makeRequest.get(
+                `/users/${user_id}`
             );
             setUser(response.data);
         }
         fetchUser();
-    }, [username]);
+    }, [user_id]);
 
     return (
         <>
@@ -33,8 +34,8 @@ export default function Profile() {
                             <img
                                 className="profileCoverImg"
                                 src={
-                                    user.coverPicture
-                                        ? PF + user.coverPicture
+                                    user.cover_picture
+                                        ? PF + user.cover_picture
                                         : PF + "person/noCover.jpeg"
                                 }
                                 alt=""
@@ -42,24 +43,24 @@ export default function Profile() {
                             <img
                                 className="profileUserImg"
                                 src={
-                                    user.profilePicture
-                                        ? PF + user.profilePicture
+                                    user.profile_picture
+                                        ? PF + user.profile_picture
                                         : PF + "person/noAvatar.jpeg"
                                 }
                                 alt=""
                             />
                         </div>
                         <div className="profileInfo">
-                            <h4 className="profileInfoName">{username}</h4>
-                            {user.desc && (
+                            <h4 className="profileInfoName">{user.user_name}</h4>
+                            {/* {user.desc && (
                                 <span className="profileInfoDesc">
                                     {user.desc}
                                 </span>
-                            )}
+                            )} */}
                         </div>
                     </div>
                     <div className="profileRightBottom">
-                        <Feed username={username} />
+                        <Feed user_id={user_id} />
                         <Rightbar user={user} />
                     </div>
                 </div>

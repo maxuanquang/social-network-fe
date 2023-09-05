@@ -5,55 +5,54 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { format } from "timeago.js";
 import { AuthContext } from "../../context/AuthContext";
+import { makeRequest } from "../../axios";
 
 export default function Post({ post }) {
     const PF = process.env.REACT_APP_PUBLIC_FOLDER;
 
-    const [like, setLike] = useState(post.likes.length);
-    const [isLiked, setIsLiked] = useState(false);
-    const { user: currentUser } = useContext(AuthContext);
+    // const [like, setLike] = useState(post.likes.length);
+    // const [isLiked, setIsLiked] = useState(false);
+    // const { user: currentUser } = useContext(AuthContext);
 
-    const likeHandler = () => {
-        try {
-            axios.put("http://192.168.0.200:8800/api/posts/" + post._id + "/like", {
-                userId: currentUser._id,
-            });
-        } catch (err) {}
-        setLike(isLiked ? like - 1 : like + 1);
-        setIsLiked(!isLiked);
-    };
+    // const likeHandler = () => {
+    //     try {
+    //         axios.post(`/posts/${post.post_id}/likes`);
+    //     } catch (err) {}
+    //     setLike(isLiked ? like - 1 : like + 1);
+    //     setIsLiked(!isLiked);
+    // };
 
-    const [user, setUser] = useState({});
-
+    const [postUser, setPostUser] = useState({});
     useEffect(() => {
         async function fetchUser() {
-            const response = await axios.get(
-                `http://192.168.0.200:8800/api/users?userId=${post.userId}`
-            );
-            setUser(response.data);
+            const response = await makeRequest.get(`/users/${post.user_id}`);
+            setPostUser(response.data);
         }
         fetchUser();
-    }, [post.userId]); // Only re-run the effect if post.userId changes
+    }, [post.user_id]); // Only re-run the effect if post.userId changes
 
     return (
         <div className="post">
             <div className="postWrapper">
                 <div className="postTop">
                     <div className="postTopLeft">
-                        <Link to={`/profile/${user.username}`}>
+                        <Link to={`/profile/${postUser.user_id}`}>
                             <img
                                 className="postProfileImg"
                                 src={
-                                    user.profilePicture
-                                        ? PF + user.profilePicture
+                                    postUser.profile_picture
+                                        ? PF + postUser.profile_picture
                                         : PF + "person/noAvatar.jpeg"
                                 }
                                 alt=""
                             />
                         </Link>
-                        <span className="postUsername">{user.username}</span>
+                        <span className="postUsername">
+                            {postUser.user_name}
+                        </span>
                         <span className="postDate">
-                            {format(post.createdAt)}
+                            {format(post.created_at)}
+                            {" " + post.created_at}
                         </span>
                     </div>
                     <div className="postTopRight">
@@ -61,9 +60,13 @@ export default function Post({ post }) {
                     </div>
                 </div>
                 <div className="postCenter">
-                    <span className="postText">{post?.desc}</span>
-                    {post.img && (
-                        <img className="postImg" src={PF + post.img} alt="" />
+                    <span className="postText">{post?.content_text}</span>
+                    {post.content_image_path && (
+                        <img
+                            className="postImg"
+                            src={post.content_image_path[0]}
+                            alt=""
+                        />
                     )}
                 </div>
                 <div className="postBottom">
@@ -71,22 +74,23 @@ export default function Post({ post }) {
                         <img
                             className="likeIcon"
                             src={PF + "like.png"}
-                            onClick={likeHandler}
+                            // onClick={likeHandler}
                             alt=""
                         />
                         <img
                             className="likeIcon"
                             src={PF + "heart.png"}
-                            onClick={likeHandler}
+                            // onClick={likeHandler}
                             alt=""
                         />
                         <span className="postLikeCounter">
-                            {like} people like it
+                            {post.users_liked ? post.users_liked.length : 0}{" "}
+                            people like it
                         </span>
                     </div>
                     <div className="postBottomRight">
                         <span className="postCommentText">
-                            {post.comment} comments
+                            {post.comments ? post.comments.length : 0} comments
                         </span>
                     </div>
                 </div>

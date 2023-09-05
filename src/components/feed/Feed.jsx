@@ -2,7 +2,7 @@ import Share from "../share/Share";
 import Post from "../post/Post";
 import "./feed.css";
 import { useContext, useEffect, useState } from "react";
-import axios from "axios";
+import { makeRequest } from "../../axios";
 import { AuthContext } from "../../context/AuthContext";
 
 export default function Feed(props) {
@@ -11,28 +11,38 @@ export default function Feed(props) {
 
     useEffect(() => {
         async function fetchPosts() {
-            const response = props.username
-                ? await axios.get(
-                      `http://192.168.0.200:8800/api/posts/profile/${props.username}`
-                  )
-                : await axios.get(
-                      `http://192.168.0.200:8800/api/posts/timeline/${user._id}`
-                  );
-            setPosts(
-                response.data.sort((p1, p2) => {
-                    return new Date(p2.createdAt) - new Date(p1.createdAt);
-                })
-            );
+            try {
+                const response = props.user_id
+                    ? await makeRequest.get(`/friends/${props.user_id}/posts`)
+                    : await makeRequest.get(`/newsfeed`);
+
+                const requestedPosts = [];
+                for (const id of response.data.posts_ids) {
+                    try {
+                        const postResponse = await makeRequest.get(
+                            `/posts/${id}`
+                        );
+                        requestedPosts.push(postResponse.data);
+                    } catch (err) {
+                        console.log(err);
+                    }
+                }
+                setPosts(requestedPosts);
+            } catch (err) {
+                console.log(err);
+            }
         }
         fetchPosts();
-    }, [props.username, user._id]);
+    }, [props.user_id]);
 
     return (
         <div className="feed">
             <div className="feedWrapper">
-                {(!props.username || props.username === user.username) && <Share />}
+                {(!props.user_id || props.user_id === user.user_id) && (
+                    <Share />
+                )}
                 {posts.map((p) => (
-                    <Post key={p._id} post={p} />
+                    <Post key={p.post_id} post={p} />
                 ))}
             </div>
         </div>
