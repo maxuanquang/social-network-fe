@@ -8,14 +8,13 @@ import {
     Cancel,
 } from "@material-ui/icons";
 import { AuthContext } from "../../context/AuthContext";
-import axios from "axios";
 import { makeRequest } from "../../axios";
 
 export default function Share() {
-    const PF = process.env.REACT_APP_PUBLIC_FOLDER;
     const { user } = useContext(AuthContext);
     const content_text = useRef();
     const [file, setFile] = useState(null);
+    const [isPosting, setIsPosting] = useState(false)
 
     const submitHandler = async (e) => {
         e.preventDefault();
@@ -25,44 +24,39 @@ export default function Share() {
             content_image_path: [],
         };
 
-        // if (file) {
-        //     const data = new FormData();
-        //     data.append("file", file);
-        //     try {
-        //         const res = await makeRequest.post(
-        //             "http://192.168.0.200:8800/api/upload",
-        //             data
-        //         );
-        //         newPost.content_image_path.push(res.data.filename);
-        //     } catch (err) {
-        //         console.log(err);
-        //     }
-        // }
-
         if (file) {
-            const presignedUrl =
-                "https://social-network-s3-mxq.s3.ap-southeast-1.amazonaws.com/U/D5cpeaR/wZvzwQoik5BY59w07L4GHQ?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQS4XPEJB2YQESZ65%2F20230904%2Fap-southeast-1%2Fs3%2Faws4_request&X-Amz-Date=20230904T081508Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=d12a0538033f17e696749faa6db8aeab15188f4c263a8c9c2cb7e612711d314b";
-            const filename = presignedUrl.split("?")[0];
+            // get url
+            const response = await makeRequest.get("/posts/url");
+            const data = await response.data;
+            const presignedURL = data.url;
+            const filename = presignedURL.split("?")[0];
 
-            try {
-                const res = await fetch({
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "image/png",
-                    },
-                    body: file,
-                });
-                console.log(res.data);
+            // put to s3
+            const res = await fetch(presignedURL, {
+                method: "PUT",
+                body: file,
+                headers: {
+                    "Content-Type": file.type,
+                },
+            });
+
+            if (res.ok) {
+                console.log("Image uploaded successfully");
                 newPost.content_image_path.push(filename);
-            } catch (err) {
-                console.log(err);
+            } else {
+                console.error("Failed to upload image:", response.statusText);
             }
         }
 
+        // make request to api server
         try {
             await makeRequest.post("/posts", newPost);
-            // window.location.reload();
-        } catch (err) {}
+        } catch (err) {
+            console.log(err);
+        }
+
+        setIsPosting(true)
+        setTimeout(() => window.location.reload(), 1000)
     };
 
     return (
@@ -73,8 +67,8 @@ export default function Share() {
                         className="shareProfileImg"
                         src={
                             user.profile_picture
-                                ? PF + user.profile_picture
-                                : PF + "person/noAvatar.jpeg"
+                                ? user.profile_picture
+                                : "/person/noAvatar.jpeg"
                         }
                         alt=""
                     />
@@ -141,7 +135,8 @@ export default function Share() {
                         </div>
                     </div>
                     <button className="shareButton" type="submit">
-                        Share
+                        {/* Share */}
+                        {isPosting ? 'Posting...' : 'Share'}
                     </button>
                 </form>
             </div>

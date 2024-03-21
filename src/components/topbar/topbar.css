@@ -38,6 +38,7 @@
     border-radius: 30px;
     display: flex;
     align-items: center;
+    margin-left: 40px;
 }
 
 .searchIcon {
@@ -97,12 +98,18 @@
     font-weight: bold;
 }
 
+.topbarRight {
+    display: flex;
+    justify-content: flex-end;
+}
+
 .topbarImg {
     width: 32px;
     height: 32px;
     border-radius: 50%;
     object-fit: cover;
     cursor: pointer;
+    margin-right: 20px;
 }
 
 .topbarLogout {
@@ -111,4 +118,5 @@
     border-radius: 20px;
     font-weight: 500;
     cursor: pointer;
+    margin-right: 20px;
 }

@@ -5,19 +5,15 @@ import Feed from "../../components/feed/Feed";
 import Rightbar from "../../components/rightbar/Rightbar";
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { makeRequest } from "../../axios";
 
 export default function Profile() {
-    const PF = process.env.REACT_APP_PUBLIC_FOLDER;
     const user_id = useParams().user_id;
     const [user, setUser] = useState({});
 
     useEffect(() => {
         async function fetchUser() {
-            const response = await makeRequest.get(
-                `/users/${user_id}`
-            );
+            const response = await makeRequest.get(`/users/${user_id}`);
             setUser(response.data);
         }
         fetchUser();
@@ -35,8 +31,8 @@ export default function Profile() {
                                 className="profileCoverImg"
                                 src={
                                     user.cover_picture
-                                        ? PF + user.cover_picture
-                                        : PF + "person/noCover.jpeg"
+                                        ? user.cover_picture
+                                        : "/person/noCover.jpeg"
                                 }
                                 alt=""
                             />
@@ -44,19 +40,16 @@ export default function Profile() {
                                 className="profileUserImg"
                                 src={
                                     user.profile_picture
-                                        ? PF + user.profile_picture
-                                        : PF + "person/noAvatar.jpeg"
+                                        ? user.profile_picture
+                                        : "/person/noAvatar.jpeg"
                                 }
                                 alt=""
                             />
                         </div>
                         <div className="profileInfo">
-                            <h4 className="profileInfoName">{user.user_name}</h4>
-                            {/* {user.desc && (
-                                <span className="profileInfoDesc">
-                                    {user.desc}
-                                </span>
-                            )} */}
+                            <h4 className="profileInfoName">
+                                {user.user_name}
+                            </h4>
                         </div>
                     </div>
                     <div className="profileRightBottom">

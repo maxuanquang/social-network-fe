@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react";
-import axios from "axios";
 import "./rightbar.css";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
@@ -7,7 +6,6 @@ import { Add, Remove } from "@material-ui/icons";
 import { makeRequest } from "../../axios";
 
 export default function Rightbar({ user }) {
-    const PF = process.env.REACT_APP_PUBLIC_FOLDER;
     const [userFollowers, setUserFollowers] = useState([]);
     const { user: currentUser, dispatch } = useContext(AuthContext);
     const [followed, setFollowed] = useState(false);
@@ -59,13 +57,13 @@ export default function Rightbar({ user }) {
         return (
             <>
                 <div className="birthdayContainer">
-                    <img className="birthdayImg" src={PF + "gift.png"} alt="" />
+                    <img className="birthdayImg" src={"/gift.png"} alt="" />
                     <span className="birthdayText">
                         <b>Pola Foster</b> and <b>3 other friends</b> have a
                         birhday today.
                     </span>
                 </div>
-                <img className="rightbarAd" src={PF + "ad.png"} alt="" />
+                <img className="rightbarAd" src={"/ad.png"} alt="" />
             </>
         );
     };
@@ -82,23 +80,6 @@ export default function Rightbar({ user }) {
                         {followed ? <Remove /> : <Add />}
                     </button>
                 )}
-                <h4 className="rightbarTitle">User information</h4>
-                <div className="rightbarInfo">
-                    <div className="rightbarInfoItem">
-                        <span className="rightbarInfoKey">City:</span>
-                        <span className="rightbarInfoValue">{user.city}</span>
-                    </div>
-                    <div className="rightbarInfoItem">
-                        <span className="rightbarInfoKey">From:</span>
-                        <span className="rightbarInfoValue">{user.from}</span>
-                    </div>
-                    <div className="rightbarInfoItem">
-                        <span className="rightbarInfoKey">Relationship:</span>
-                        <span className="rightbarInfoValue">
-                            {user.relationship}
-                        </span>
-                    </div>
-                </div>
                 <h4 className="rightbarTitle">User followers</h4>
                 <div className="rightbarFollowings">
                     {userFollowers.slice(0, 9).map((follower) => (
@@ -110,8 +91,8 @@ export default function Rightbar({ user }) {
                                 <img
                                     src={
                                         follower.profile_picture
-                                            ? PF + follower.profile_picture
-                                            : PF + "person/noAvatar.jpeg"
+                                            ? follower.profile_picture
+                                            : "/person/noAvatar.jpeg"
                                     }
                                     alt=""
                                     className="rightbarFollowingImg"
