@@ -6,12 +6,16 @@ import { Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 
 export default function Topbar() {
-    const handleClick = () => {
-        localStorage.removeItem("user");
-        window.location.reload(false);
-    };
+    const history = useHistory();
 
     const { user } = useContext(AuthContext);
+
+    const handleLogoutButtonClick = () => {
+        localStorage.removeItem("user");
+        setTimeout(() => {}, 1000);
+        history.push("/");
+        window.location.reload(false);
+    };
 
     return (
         <div className="topbarContainer">
@@ -41,7 +45,10 @@ export default function Topbar() {
                         alt=""
                     />
                 </Link>
-                <button className="topbarLogout" onClick={handleClick}>
+                <button
+                    className="topbarLogout"
+                    onClick={handleLogoutButtonClick}
+                >
                     Logout
                 </button>
             </div>

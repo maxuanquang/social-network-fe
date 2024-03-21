@@ -3,13 +3,14 @@ import { useContext, useRef } from "react";
 import { loginCall } from "../../apiCalls";
 import { AuthContext } from "../../context/AuthContext";
 import { CircularProgress } from "@material-ui/core";
+import { Link } from "react-router-dom";
 
 export default function Login() {
     const username = useRef();
     const password = useRef();
     const { isFetching, dispatch } = useContext(AuthContext);
 
-    const handleClick = (e) => {
+    const handleFormSubmit = (e) => {
         e.preventDefault();
         loginCall(
             {
@@ -18,6 +19,10 @@ export default function Login() {
             },
             dispatch
         );
+    };
+
+    const handleRegisterButtonClick = (e) => {
+        console.log("hehe");
     };
 
     return (
@@ -31,7 +36,7 @@ export default function Login() {
                     </span>
                 </div>
                 <div className="loginRight">
-                    <form className="loginBox" onSubmit={handleClick}>
+                    <form className="loginBox" onSubmit={handleFormSubmit}>
                         <input
                             placeholder="Username"
                             required
@@ -55,11 +60,15 @@ export default function Login() {
                                 "Log In"
                             )}
                         </button>
-                        <span className="loginForgot">Forgot Password?</span>
-                        <button className="loginRegisterButton">
+                    </form>
+                    <Link to="/register">
+                        <button
+                            className="loginRegisterButton"
+                            onClick={handleRegisterButtonClick}
+                        >
                             Create a New Account
                         </button>
-                    </form>
+                    </Link>
                 </div>
             </div>
         </div>

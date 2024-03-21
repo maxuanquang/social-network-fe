@@ -26,7 +26,7 @@ function App() {
                     <Register />
                 </Route>
                 <Route path="/profile/:user_id">
-                    {user ? <Profile /> : <Redirect to="/login" />}
+                    {user ? <Profile /> : <Redirect to="/" />}
                 </Route>
             </Switch>
         </Router>

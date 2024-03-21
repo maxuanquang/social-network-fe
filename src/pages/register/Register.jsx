@@ -1,7 +1,9 @@
 import axios from "axios";
 import "./register.css";
 import { useRef } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
+import { makeRequest } from "../../axios";
+import { registerCall } from "../../apiCalls";
 
 export default function Register() {
     const username = useRef();
@@ -16,68 +18,63 @@ export default function Register() {
             paswordAgain.current.setCustomValidity("Passwords do not matched");
         } else {
             const user = {
-                username: username.current.value,
+                user_name: username.current.value,
                 email: email.current.value,
                 password: password.current.value,
             };
-            try {
-                await axios.post(
-                    "http://192.168.0.200:8800/api/auth/register",
-                    user
-                );
-                history.push("/login");
-            } catch (err) {
-                console.log(err);
-            }
+            registerCall(user);
+            history.push("/login");
         }
     };
 
     return (
-        <div className="login">
-            <div className="loginWrapper">
-                <div className="loginLeft">
-                    <h3 className="loginLogo">Lamasocial</h3>
-                    <span className="loginDesc">
+        <div className="register">
+            <div className="registerWrapper">
+                <div className="registerLeft">
+                    <h3 className="registerLogo">Lamasocial</h3>
+                    <span className="registerDesc">
                         Connect with friends and the world around you on
                         Lamasocial.
                     </span>
                 </div>
-                <div className="loginRight">
-                    <form className="loginBox" onSubmit={handleClick}>
+                <div className="registerRight">
+                    <form className="registerBox" onSubmit={handleClick}>
                         <input
                             placeholder="Username"
                             required
                             ref={username}
-                            className="loginInput"
+                            className="registerInput"
                         />
                         <input
                             placeholder="Email"
                             required
                             type="email"
                             ref={email}
-                            className="loginInput"
+                            className="registerInput"
                         />
                         <input
                             placeholder="Password"
                             required
                             type="password"
                             ref={password}
-                            className="loginInput"
+                            className="registerInput"
                         />
                         <input
                             placeholder="Password Again"
                             required
                             type="password"
                             ref={paswordAgain}
-                            className="loginInput"
+                            className="registerInput"
                         />
-                        <button className="loginButton" type="submit">
+                        <button className="registerButton" type="submit">
                             Sign Up
                         </button>
-                        <button className="loginRegisterButton">
+                    </form>
+                    <Link to="/login">
+                        <button className="registerLoginButton">
                             Log into Account
                         </button>
-                    </form>
+                    </Link>
                 </div>
             </div>
         </div>

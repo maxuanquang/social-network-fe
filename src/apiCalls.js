@@ -16,3 +16,14 @@ export const loginCall = async (userCredential, dispatch) => {
         dispatch({ type: "LOGIN_FAILURE", payload: err });
     }
 };
+
+export const registerCall = async (userInformation) => {
+    try {
+        const res = await makeRequest.post("/users/signup", userInformation);
+        console.log("successful registering account")
+        console.log(res)
+    } catch (err) {
+        console.log("error registering account")
+        console.log(err)
+    }
+};
